@@ -32,7 +32,13 @@ export function createSkillCommand(): Command {
 }
 
 function generateBasicSkill(): string {
-    return `# TxTodo Skill
+    return `---
+name: txtodo
+description: Manage todo.txt files. Add, list, complete, and search tasks. Use when organizing tasks, managing to-do lists, or tracking work items.
+compatibility: Requires Node.js runtime
+---
+
+# TxTodo Skill
 
 ## Basic Commands
 
@@ -74,7 +80,16 @@ txtodo update <index> "new text"
 }
 
 function generateMaxSkill(): string {
-    return `# TxTodo Skill - Complete Reference
+    return `---
+name: txtodo
+description: Manage todo.txt files. Add, list, complete, search, filter, and sort tasks with command chaining. Use when organizing tasks, managing to-do lists, tracking work items, or filtering by project/context.
+compatibility: Requires Node.js runtime
+metadata:
+  version: "1.0"
+  commands: list,add,remove,update,mark,unmark,search,filter,sort,subtask,insert,skill
+---
+
+# TxTodo Skill - Complete Reference
 
 ## Overview
 txtodo is a CLI for managing todo.txt files with support for filtering, sorting, and command chaining.
@@ -138,6 +153,7 @@ txtodo search "text"
 txtodo filter project:Home
 txtodo filter context:@phone
 txtodo filter priority:A
+txtodo filter due:2024-01-16
 \`\`\`
 
 ### Sort todos
@@ -145,6 +161,7 @@ txtodo filter priority:A
 txtodo sort priority:ASC
 txtodo sort priority:DESC
 txtodo sort date:ASC
+txtodo sort due:DESC
 \`\`\`
 
 ## Command Chaining
@@ -181,6 +198,7 @@ txtodo /path/to/file.txt add "task"
 (A) 2024-01-15 Call Mom +Family @phone due:2024-01-16
 (B) Schedule appointment +Work
 x 2024-01-15 (A) 2024-01-14 Completed task
+    Subtask with indentation
 \`\`\`
 
 ### Priorities
