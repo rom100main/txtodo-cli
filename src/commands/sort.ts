@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
+import { printTasks } from "../utils/display.js";
 import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
@@ -67,16 +68,7 @@ export function createSortCommand(): Command {
             }
 
             const originalIndices = sorted.map((task) => tasks.indexOf(task) + 1);
-
-            sorted.forEach((task, idx) => {
-                const lineNum = originalIndices[idx];
-                const completed = task.completed ? "x" : " ";
-                const priority = task.priority ? `(${task.priority})` : " ";
-                const indent = task.indentLevel && task.indentLevel > 0 ? "└─ " : "";
-                const text = task.description;
-
-                console.log(`${lineNum}. [${completed}] ${priority} ${indent}${text}`);
-            });
+            printTasks(sorted, originalIndices);
         });
 
     return cmd;
