@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-
 import { Command } from "commander";
 
 import { createAddCommand } from "./commands/add.js";
@@ -18,6 +15,7 @@ import { createSortCommand } from "./commands/sort.js";
 import { createSubtaskCommand } from "./commands/subtask.js";
 import { createUnmarkCommand } from "./commands/unmark.js";
 import { createUpdateCommand } from "./commands/update.js";
+import { resolveTodoFile } from "./utils/file.js";
 
 const knownCommands = [
     "help",
@@ -37,22 +35,6 @@ const knownCommands = [
     "uncomplete",
     "order",
 ];
-
-function resolveTodoFile(filePath?: string): string {
-    if (filePath) {
-        const resolved = path.resolve(filePath);
-        if (!fs.existsSync(resolved)) {
-            fs.writeFileSync(resolved, "", "utf-8");
-        }
-        return resolved;
-    }
-
-    const defaultPath = path.resolve("todo.txt");
-    if (!fs.existsSync(defaultPath)) {
-        fs.writeFileSync(defaultPath, "", "utf-8");
-    }
-    return defaultPath;
-}
 
 const args = process.argv.slice(2);
 let todoFile: string;
