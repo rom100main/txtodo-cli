@@ -32,7 +32,7 @@ export function createSkillCommand(): Command {
 }
 
 function generateBasicSkill(): string {
-    return `# txtodo Skill
+    return `# TxTodo Skill
 
 ## Basic Commands
 
@@ -74,7 +74,7 @@ txtodo update <index> "new text"
 }
 
 function generateMaxSkill(): string {
-    return `# txtodo Skill - Complete Reference
+    return `# TxTodo Skill - Complete Reference
 
 ## Overview
 txtodo is a CLI for managing todo.txt files with support for filtering, sorting, and command chaining.

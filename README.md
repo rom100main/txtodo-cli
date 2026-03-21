@@ -1,6 +1,6 @@
 # Todo.txt MCP Server
 
-A CLI for txtodo a todo.txt parser/serializer with utils funcion, extension support and subtask handling.
+A CLI for TxTodo a todo.txt parser/serializer with utils funcion, extension support and subtask handling.
 
 ## Features
 
