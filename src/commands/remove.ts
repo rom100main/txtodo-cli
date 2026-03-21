@@ -1,0 +1,48 @@
+import { Command } from "commander";
+import { TodoTxt } from "txtodo";
+
+import { resolveTodoFile } from "../utils/file.js";
+import { parseListIndices } from "../utils/parser.js";
+import { promptForText } from "../utils/prompt.js";
+
+export function createRemoveCommand(): Command {
+    const cmd = new Command("remove");
+
+    cmd.description("Remove todos by index")
+        .argument("[indices]", 'Indices to remove (e.g., "1,2,3" or "all")')
+        .action(async (indices?: string) => {
+            const file = resolveTodoFile();
+
+            if (!indices) {
+                const result = await promptForText("Enter indices to remove (e.g., 1,2,3 or all):");
+                if (result.cancelled) return;
+                indices = result.text;
+            }
+
+            const todo = new TodoTxt({ filePath: file });
+            await todo.load();
+
+            const parsedIndices = parseListIndices(indices);
+            const tasks = todo.list();
+
+            if (parsedIndices === "all") {
+                for (let i = tasks.length - 1; i >= 0; i--) {
+                    await todo.remove(i);
+                }
+            } else {
+                const sortedIndices = parsedIndices.map((i) => i - 1).sort((a, b) => b - a);
+                for (const idx of sortedIndices) {
+                    if (idx < 0 || idx >= tasks.length) {
+                        console.error(`Error: Index ${idx + 1} out of range`);
+                        continue;
+                    }
+                    await todo.remove(idx);
+                }
+            }
+
+            await todo.save();
+            console.log("Todos removed successfully");
+        });
+
+    return cmd;
+}
