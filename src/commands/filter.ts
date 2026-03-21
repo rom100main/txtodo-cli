@@ -14,9 +14,7 @@ export function createFilterCommand(): Command {
             const file = resolveTodoFile();
 
             if (!filterStr) {
-                const result = await promptForText("Enter filter (key:value or text):");
-                if (result.cancelled) return;
-                filterStr = result.text;
+                filterStr = await promptForText("Enter filter (key:value or text):");
             }
 
             const todo = new TodoTxt({ filePath: file });

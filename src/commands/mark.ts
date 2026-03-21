@@ -14,9 +14,7 @@ export function createMarkCommand(): Command {
             const file = resolveTodoFile();
 
             if (!indices) {
-                const result = await promptForText("Enter indices to mark (e.g., 1,2,3 or all):");
-                if (result.cancelled) return;
-                indices = result.text;
+                indices = await promptForText("Enter indices to mark (e.g., 1,2,3 or all):");
             }
 
             const todo = new TodoTxt({ filePath: file });

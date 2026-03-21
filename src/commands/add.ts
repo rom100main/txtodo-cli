@@ -22,9 +22,7 @@ export function createAddCommand(): Command {
             }
 
             if (!text) {
-                const result = await promptForText("What needs to be done?");
-                if (result.cancelled) return;
-                text = result.text;
+                text = await promptForText("What needs to be done?");
             }
 
             if (index) {

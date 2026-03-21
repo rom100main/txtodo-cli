@@ -14,9 +14,7 @@ export function createSortCommand(): Command {
             const file = resolveTodoFile();
 
             if (!sortStr) {
-                const result = await promptForText("Enter sort (e.g., priority:ASC or date:DESC):");
-                if (result.cancelled) return;
-                sortStr = result.text;
+                sortStr = await promptForText("Enter sort (e.g., priority:ASC or date:DESC):");
             }
 
             const todo = new TodoTxt({ filePath: file });

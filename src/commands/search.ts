@@ -14,9 +14,7 @@ export function createSearchCommand(): Command {
             const file = resolveTodoFile();
 
             if (!text) {
-                const result = await promptForText("Enter search text:");
-                if (result.cancelled) return;
-                text = result.text;
+                text = await promptForText("Enter search text:");
             }
 
             const todo = new TodoTxt({ filePath: file });

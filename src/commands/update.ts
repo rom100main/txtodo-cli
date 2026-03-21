@@ -14,15 +14,11 @@ export function createUpdateCommand(): Command {
             const file = resolveTodoFile();
 
             if (!index) {
-                const indexResult = await promptForText("Enter todo index:");
-                if (indexResult.cancelled) return;
-                index = indexResult.text;
+                index = await promptForText("Enter todo index:");
             }
 
             if (!text) {
-                const textResult = await promptForText("Enter new text:");
-                if (textResult.cancelled) return;
-                text = textResult.text;
+                text = await promptForText("Enter new text:");
             }
 
             const todo = new TodoTxt({ filePath: file });

@@ -14,15 +14,11 @@ export function createInsertCommand(): Command {
             const file = resolveTodoFile();
 
             if (!index) {
-                const indexResult = await promptForText("Enter position:");
-                if (indexResult.cancelled) return;
-                index = indexResult.text;
+                index = await promptForText("Enter position:");
             }
 
             if (!text) {
-                const textResult = await promptForText("Enter todo text:");
-                if (textResult.cancelled) return;
-                text = textResult.text;
+                text = await promptForText("Enter todo text:");
             }
 
             const todo = new TodoTxt({ filePath: file });
