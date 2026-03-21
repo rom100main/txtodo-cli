@@ -2,23 +2,20 @@ import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
 import { printTasks } from "../utils/display.js";
-import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createFilterCommand(): Command {
+export function createFilterCommand(todoFile: string): Command {
     const cmd = new Command("filter");
 
     cmd.description("Filter todos by key:value or text")
         .argument("[filter]", "Filter in format key:value or text to search")
         .action(async (filterStr?: string) => {
-            const file = resolveTodoFile();
+            const todo = new TodoTxt({ filePath: todoFile });
+            await todo.load();
 
             if (!filterStr) {
                 filterStr = await promptForText("Enter filter (key:value or text):");
             }
-
-            const todo = new TodoTxt({ filePath: file });
-            await todo.load();
 
             const tasks = todo.list();
             let filtered: typeof tasks;

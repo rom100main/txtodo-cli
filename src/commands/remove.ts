@@ -1,24 +1,21 @@
 import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
-import { resolveTodoFile } from "../utils/file.js";
 import { parseListIndices } from "../utils/parser.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createRemoveCommand(): Command {
+export function createRemoveCommand(todoFile: string): Command {
     const cmd = new Command("remove");
 
     cmd.description("Remove todos by index")
         .argument("[indices]", 'Indices to remove (e.g., "1,2,3" or "all")')
         .action(async (indices?: string) => {
-            const file = resolveTodoFile();
+            const todo = new TodoTxt({ filePath: todoFile });
+            await todo.load();
 
             if (!indices) {
                 indices = await promptForText("Enter indices to remove (e.g., 1,2,3 or all):");
             }
-
-            const todo = new TodoTxt({ filePath: file });
-            await todo.load();
 
             const parsedIndices = parseListIndices(indices);
             const tasks = todo.list();

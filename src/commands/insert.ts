@@ -1,18 +1,15 @@
 import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
-import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createInsertCommand(): Command {
+export function createInsertCommand(todoFile: string): Command {
     const cmd = new Command("insert");
 
     cmd.description("Insert a todo at position")
         .argument("[index]", "Position to insert at")
         .argument("[text]", "Todo text")
         .action(async (index?: string, text?: string) => {
-            const file = resolveTodoFile();
-
             if (!index) {
                 index = await promptForText("Enter position:");
             }
@@ -21,7 +18,7 @@ export function createInsertCommand(): Command {
                 text = await promptForText("Enter todo text:");
             }
 
-            const todo = new TodoTxt({ filePath: file });
+            const todo = new TodoTxt({ filePath: todoFile });
             await todo.load();
 
             const idx = parseInt(index, 10);

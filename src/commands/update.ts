@@ -1,18 +1,15 @@
 import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
-import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createUpdateCommand(): Command {
+export function createUpdateCommand(todoFile: string): Command {
     const cmd = new Command("update");
 
     cmd.description("Update a todo's text")
         .argument("[index]", "Todo index")
         .argument("[text]", "New text")
         .action(async (index?: string, text?: string) => {
-            const file = resolveTodoFile();
-
             if (!index) {
                 index = await promptForText("Enter todo index:");
             }
@@ -21,7 +18,7 @@ export function createUpdateCommand(): Command {
                 text = await promptForText("Enter new text:");
             }
 
-            const todo = new TodoTxt({ filePath: file });
+            const todo = new TodoTxt({ filePath: todoFile });
             await todo.load();
 
             const idx = parseInt(index, 10);

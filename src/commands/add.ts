@@ -1,18 +1,16 @@
 import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
-import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createAddCommand(): Command {
+export function createAddCommand(todoFile: string): Command {
     const cmd = new Command("add");
 
     cmd.description("Add a new todo")
         .argument("[index]", "Index to insert at (optional)")
         .argument("[text]", "Todo text")
         .action(async (index?: string, text?: string) => {
-            const file = resolveTodoFile();
-            const todo = new TodoTxt({ filePath: file });
+            const todo = new TodoTxt({ filePath: todoFile });
             await todo.load();
 
             // If only one argument provided, treat it as text

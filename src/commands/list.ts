@@ -2,14 +2,12 @@ import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
 import { printTasks } from "../utils/display.js";
-import { resolveTodoFile } from "../utils/file.js";
 
-export function createListCommand(): Command {
+export function createListCommand(todoFile: string): Command {
     const cmd = new Command("list");
 
     cmd.description("List all todos").action(async () => {
-        const file = resolveTodoFile();
-        const todo = new TodoTxt({ filePath: file });
+        const todo = new TodoTxt({ filePath: todoFile });
         await todo.load();
 
         const tasks = todo.list();

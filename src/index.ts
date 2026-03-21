@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import fs from "fs";
+import path from "path";
+
 import { Command } from "commander";
 
 import { createAddCommand } from "./commands/add.js";
@@ -16,22 +19,67 @@ import { createSubtaskCommand } from "./commands/subtask.js";
 import { createUnmarkCommand } from "./commands/unmark.js";
 import { createUpdateCommand } from "./commands/update.js";
 
+const knownCommands = [
+    "help",
+    "list",
+    "add",
+    "subtask",
+    "remove",
+    "insert",
+    "update",
+    "mark",
+    "unmark",
+    "search",
+    "filter",
+    "sort",
+    "skill",
+    "complete",
+    "uncomplete",
+    "order",
+];
+
+function resolveTodoFile(filePath?: string): string {
+    if (filePath) {
+        const resolved = path.resolve(filePath);
+        if (!fs.existsSync(resolved)) {
+            fs.writeFileSync(resolved, "", "utf-8");
+        }
+        return resolved;
+    }
+
+    const defaultPath = path.resolve("todo.txt");
+    if (!fs.existsSync(defaultPath)) {
+        fs.writeFileSync(defaultPath, "", "utf-8");
+    }
+    return defaultPath;
+}
+
+const args = process.argv.slice(2);
+let todoFile: string;
+
+if (args.length > 0 && !args[0].startsWith("-") && !knownCommands.includes(args[0])) {
+    todoFile = resolveTodoFile(args[0]);
+    process.argv.splice(2, 1);
+} else {
+    todoFile = resolveTodoFile();
+}
+
 const program = new Command();
 
 program.name("txtodo").description("A CLI for managing todo.txt files").version("1.1.1");
 
 program.addCommand(createHelpCommand());
-program.addCommand(createListCommand());
-program.addCommand(createAddCommand());
-program.addCommand(createSubtaskCommand());
-program.addCommand(createRemoveCommand());
-program.addCommand(createInsertCommand());
-program.addCommand(createUpdateCommand());
-program.addCommand(createMarkCommand());
-program.addCommand(createUnmarkCommand());
-program.addCommand(createSearchCommand());
-program.addCommand(createFilterCommand());
-program.addCommand(createSortCommand());
+program.addCommand(createListCommand(todoFile));
+program.addCommand(createAddCommand(todoFile));
+program.addCommand(createSubtaskCommand(todoFile));
+program.addCommand(createRemoveCommand(todoFile));
+program.addCommand(createInsertCommand(todoFile));
+program.addCommand(createUpdateCommand(todoFile));
+program.addCommand(createMarkCommand(todoFile));
+program.addCommand(createUnmarkCommand(todoFile));
+program.addCommand(createSearchCommand(todoFile));
+program.addCommand(createFilterCommand(todoFile));
+program.addCommand(createSortCommand(todoFile));
 program.addCommand(createSkillCommand());
 
 program.parse();

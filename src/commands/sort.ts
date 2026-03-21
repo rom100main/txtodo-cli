@@ -2,23 +2,20 @@ import { Command } from "commander";
 import { TodoTxt } from "txtodo";
 
 import { printTasks } from "../utils/display.js";
-import { resolveTodoFile } from "../utils/file.js";
 import { promptForText } from "../utils/prompt.js";
 
-export function createSortCommand(): Command {
+export function createSortCommand(todoFile: string): Command {
     const cmd = new Command("sort");
 
     cmd.description("Sort todos by key")
         .argument("[sort]", "Sort in format key:ASC|DESC")
         .action(async (sortStr?: string) => {
-            const file = resolveTodoFile();
+            const todo = new TodoTxt({ filePath: todoFile });
+            await todo.load();
 
             if (!sortStr) {
                 sortStr = await promptForText("Enter sort (e.g., priority:ASC or date:DESC):");
             }
-
-            const todo = new TodoTxt({ filePath: file });
-            await todo.load();
 
             const parts = sortStr.split(":");
             const key = parts[0];
