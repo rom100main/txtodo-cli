@@ -3,6 +3,14 @@ import { TodoTxt } from "txtodo";
 
 import { promptForText } from "../utils/prompt.js";
 
+export async function insertTodo(todoFile: string, index: number, text: string): Promise<void> {
+    const todo = new TodoTxt({ filePath: todoFile });
+    await todo.load();
+
+    await todo.insert(index - 1, text);
+    await todo.save();
+}
+
 export function createInsertCommand(todoFile: string): Command {
     const cmd = new Command("insert");
 
@@ -18,17 +26,12 @@ export function createInsertCommand(todoFile: string): Command {
                 text = await promptForText("Enter todo text:");
             }
 
-            const todo = new TodoTxt({ filePath: todoFile });
-            await todo.load();
-
             const idx = parseInt(index, 10);
             if (isNaN(idx) || idx < 1) {
                 throw new Error("Invalid index");
             }
 
-            await todo.insert(idx - 1, text);
-            await todo.save();
-
+            await insertTodo(todoFile, idx, text);
             console.log("Todo inserted successfully");
         });
 

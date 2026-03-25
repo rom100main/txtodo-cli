@@ -4,6 +4,20 @@ import { TodoTxt } from "txtodo";
 import { parseListIndices, getFirstIndex } from "../utils/parser.js";
 import { promptForText } from "../utils/prompt.js";
 
+export async function addSubtask(todoFile: string, index: number, text: string): Promise<void> {
+    const todo = new TodoTxt({ filePath: todoFile });
+    await todo.load();
+
+    const tasks = todo.list();
+    if (index < 1 || index > tasks.length) {
+        throw new Error(`Index ${index} out of range`);
+    }
+
+    const subtaskText = "    " + text;
+    await todo.insert(index - 1, subtaskText);
+    await todo.save();
+}
+
 export function createSubtaskCommand(todoFile: string): Command {
     const cmd = new Command("subtask");
 
@@ -19,9 +33,6 @@ export function createSubtaskCommand(todoFile: string): Command {
                 text = await promptForText("Enter subtask text:");
             }
 
-            const todo = new TodoTxt({ filePath: todoFile });
-            await todo.load();
-
             const indices = parseListIndices(index);
             const firstIndex = getFirstIndex(indices);
 
@@ -29,16 +40,7 @@ export function createSubtaskCommand(todoFile: string): Command {
                 throw new Error("Invalid index for subtask");
             }
 
-            const tasks = todo.list();
-            if (firstIndex < 1 || firstIndex > tasks.length) {
-                throw new Error(`Index ${firstIndex} out of range`);
-            }
-
-            const subtaskText = "    " + text;
-
-            await todo.insert(firstIndex, subtaskText);
-            await todo.save();
-
+            await addSubtask(todoFile, firstIndex, text);
             console.log("Subtask added successfully");
         });
 

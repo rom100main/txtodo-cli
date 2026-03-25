@@ -1,8 +1,57 @@
 import { Command } from "commander";
-import { TodoTxt } from "txtodo";
+import { Task, TodoTxt } from "txtodo";
 
 import { printTasks } from "../utils/display.js";
 import { promptForText } from "../utils/prompt.js";
+
+export function filterTasks(tasks: Task[], keyOrText: string, value?: string): number[] {
+    if (value !== undefined) {
+        if (keyOrText === "project" || keyOrText === "projects") {
+            return tasks
+                .map((task, index) => ({ task, index: index + 1 }))
+                .filter(({ task }) => task.projects?.includes(value.replace("+", "")))
+                .map(({ index }) => index);
+        }
+        if (keyOrText === "context" || keyOrText === "contexts") {
+            return tasks
+                .map((task, index) => ({ task, index: index + 1 }))
+                .filter(({ task }) => task.contexts?.includes(value.replace("@", "")))
+                .map(({ index }) => index);
+        }
+        if (keyOrText === "priority") {
+            return tasks
+                .map((task, index) => ({ task, index: index + 1 }))
+                .filter(({ task }) => task.priority === value)
+                .map(({ index }) => index);
+        }
+        if (keyOrText === "completed") {
+            const completedValue = value.toLowerCase();
+            const isCompleted = completedValue === "true" || completedValue === "yes" || completedValue === "y";
+            return tasks
+                .map((task, index) => ({ task, index: index + 1 }))
+                .filter(({ task }) => isCompleted === task.completed)
+                .map(({ index }) => index);
+        }
+        return tasks
+            .map((task, index) => ({ task, index: index + 1 }))
+            .filter(({ task }) => {
+                if (task.extensions && task.extensions[keyOrText]) {
+                    const extValue = task.extensions[keyOrText];
+                    if (Array.isArray(extValue)) {
+                        return extValue.some((v) => String(v).toLowerCase() === value.toLowerCase());
+                    }
+                    return String(extValue).toLowerCase() === value.toLowerCase();
+                }
+                return false;
+            })
+            .map(({ index }) => index);
+    } else {
+        return tasks
+            .map((task, index) => ({ task, index: index + 1 }))
+            .filter(({ task }) => task.description.toLowerCase().includes(keyOrText.toLowerCase()))
+            .map(({ index }) => index);
+    }
+}
 
 export function createFilterCommand(todoFile: string): Command {
     const cmd = new Command("filter");
@@ -18,55 +67,26 @@ export function createFilterCommand(todoFile: string): Command {
             }
 
             const tasks = todo.list();
-            let filtered: typeof tasks;
+            let indices: number[];
 
-            // Check if it's key:value format
             if (filterStr.includes(":")) {
                 const [key, value] = filterStr.split(":");
                 if (!key || !value) {
                     console.error("Error: Filter must be in format key:value");
                     return;
                 }
-
-                filtered = tasks.filter((task) => {
-                    if (key === "project" || key === "projects") {
-                        return task.projects?.includes(value.replace("+", ""));
-                    }
-                    if (key === "context" || key === "contexts") {
-                        return task.contexts?.includes(value.replace("@", ""));
-                    }
-                    if (key === "priority") {
-                        return task.priority === value;
-                    }
-                    if (key === "completed") {
-                        const completedValue = value.toLowerCase();
-                        return (
-                            (completedValue === "true" || completedValue === "yes" || completedValue === "y") ===
-                            task.completed
-                        );
-                    }
-                    // Check extensions
-                    if (task.extensions && task.extensions[key]) {
-                        const extValue = task.extensions[key];
-                        if (Array.isArray(extValue)) {
-                            return extValue.some((v) => String(v).toLowerCase() === value.toLowerCase());
-                        }
-                        return String(extValue).toLowerCase() === value.toLowerCase();
-                    }
-                    return false;
-                });
+                indices = filterTasks(tasks, key, value);
             } else {
-                // Plain text search
-                filtered = tasks.filter((task) => task.description.toLowerCase().includes(filterStr!.toLowerCase()));
+                indices = filterTasks(tasks, filterStr);
             }
 
-            if (filtered.length === 0) {
+            if (indices.length === 0) {
                 console.log("No matching todos found.");
                 return;
             }
 
-            const originalIndices = filtered.map((task) => tasks.indexOf(task) + 1);
-            printTasks(filtered, originalIndices);
+            const filtered = indices.map((i) => tasks[i - 1]);
+            printTasks(filtered, indices);
         });
 
     return cmd;

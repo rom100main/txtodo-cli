@@ -10,7 +10,7 @@ export function printTasks(tasks: Task[], originalIndices: number[], options?: P
     tasks.forEach((task, idx) => {
         const lineNum = originalIndices[idx];
         const completed = task.completed ? "x" : " ";
-        const priority = task.priority ? `(${task.priority})` : " ";
+        const priority = task.priority ? `(${task.priority})` : "   ";
         const indent = task.indentLevel && task.indentLevel > 0 ? "└─ " : "";
         let text = task.description;
 
