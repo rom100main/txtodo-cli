@@ -10,6 +10,7 @@ import { sortTasks } from "../commands/sort.js";
 import { addSubtask } from "../commands/subtask.js";
 import { unmarkTodos } from "../commands/unmark.js";
 import { updateTodo } from "../commands/update.js";
+import { parseListIndices, getFirstIndex } from "../utils/parser.js";
 
 import { printTasks } from "./display.js";
 import { promptForText } from "./prompt.js";
@@ -19,7 +20,7 @@ export interface ChainStep {
     args?: string[];
 }
 
-export async function executeChain(todoFile: string, steps: ChainStep[]): Promise<void> {
+export async function executeChain(todoFile: string, steps: ChainStep[], subtaskChainDepth = 1): Promise<void> {
     const todo = new TodoTxt({ filePath: todoFile });
     await todo.load();
 
@@ -115,13 +116,22 @@ export async function executeChain(todoFile: string, steps: ChainStep[]): Promis
             console.log("Todo updated successfully");
         }
     } else if (actionStep.type === "subtask") {
-        let subtaskText = actionStep.args?.[0];
+        let indexArg = actionStep.args?.[0];
+        let subtaskText = actionStep.args?.[1];
+
+        if (!indexArg) {
+            indexArg = await promptForText("Enter todo index:");
+        }
+
         if (!subtaskText) {
             subtaskText = await promptForText("Enter subtask text:");
         }
-        const firstIndex = indices[0];
+
+        const parsedIndices = parseListIndices(indexArg);
+        const firstIndex = getFirstIndex(parsedIndices);
+
         if (firstIndex) {
-            await addSubtask(todoFile, firstIndex, subtaskText);
+            await addSubtask(todoFile, firstIndex, subtaskText, subtaskChainDepth);
             console.log("Subtask added successfully");
         }
     } else if (actionStep.type === "add") {

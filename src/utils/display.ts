@@ -11,7 +11,13 @@ export function printTasks(tasks: Task[], originalIndices: number[], options?: P
         const lineNum = originalIndices[idx];
         const completed = task.completed ? "x" : " ";
         const priority = task.priority ? `(${task.priority})` : "   ";
-        const indent = task.indentLevel && task.indentLevel > 0 ? "└─ " : "";
+
+        let indent = "";
+        if (task.indentLevel && task.indentLevel > 0) {
+            const indentSpaces = " ".repeat(task.indentLevel - 4);
+            indent = indentSpaces + "└─ ";
+        }
+
         let text = task.description;
 
         if (highlightText) {

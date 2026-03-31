@@ -41,21 +41,25 @@ if (args.length > 0) {
     const chainableCount = commandWords.filter((word) => chainableCommands.includes(word)).length;
     hasChain = chainableCount > 1;
 
-    const firstWord = commandWords[0];
-    const isFileArg = firstWord.endsWith(".txt") || firstWord.includes("/");
+    if (commandWords.length > 0) {
+        const firstWord = commandWords[0];
+        const isFileArg = firstWord.endsWith(".txt") || firstWord.includes("/");
 
-    if (isFileArg) {
-        const fileArgIndex = args.indexOf(firstWord);
-        todoFile = resolveTodoFile(firstWord);
-        processArgs = [...args.slice(0, fileArgIndex), ...args.slice(fileArgIndex + 1)];
-        if (hasChain) {
-            chainArgs = processArgs;
+        if (isFileArg) {
+            const fileArgIndex = args.indexOf(firstWord);
+            todoFile = resolveTodoFile(firstWord);
+            processArgs = [...args.slice(0, fileArgIndex), ...args.slice(fileArgIndex + 1)];
+            if (hasChain) {
+                chainArgs = processArgs;
+            }
+        } else {
+            todoFile = resolveTodoFile();
+            if (hasChain) {
+                chainArgs = args;
+            }
         }
     } else {
         todoFile = resolveTodoFile();
-        if (hasChain) {
-            chainArgs = args;
-        }
     }
 } else {
     todoFile = resolveTodoFile();
@@ -64,7 +68,7 @@ if (args.length > 0) {
 if (hasChain && chainArgs.length > 0) {
     import("./utils/chain.js")
         .then(async ({ executeChain }) => {
-            const steps: import("./utils/chain.js").ChainStep[] = [];
+            let steps: import("./utils/chain.js").ChainStep[] = [];
             let currentType: import("./utils/chain.js").ChainStep["type"] | null = null;
             let currentArgs: string[] = [];
 
@@ -84,7 +88,21 @@ if (hasChain && chainArgs.length > 0) {
                 steps.push({ type: currentType, args: currentArgs });
             }
 
-            await executeChain(todoFile, steps);
+            let subtaskChainCount = 0;
+            for (const step of steps) {
+                if (step.type === "subtask") {
+                    subtaskChainCount++;
+                } else {
+                    break;
+                }
+            }
+
+            if (subtaskChainCount > 1) {
+                const lastSubtaskStep = steps[subtaskChainCount - 1];
+                steps = [lastSubtaskStep, ...steps.slice(subtaskChainCount)];
+            }
+
+            await executeChain(todoFile, steps, subtaskChainCount || 1);
         })
         .catch((error) => {
             console.error(`Error: ${(error as Error).message}`);
