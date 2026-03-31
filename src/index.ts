@@ -15,6 +15,7 @@ import { createSortCommand } from "./commands/sort.js";
 import { createSubtaskCommand } from "./commands/subtask.js";
 import { createUnmarkCommand } from "./commands/unmark.js";
 import { createUpdateCommand } from "./commands/update.js";
+import { executeChain, ChainStep } from "./utils/chain.js";
 import { resolveTodoFile } from "./utils/file.js";
 
 const chainableCommands = [
@@ -66,48 +67,46 @@ if (args.length > 0) {
 }
 
 if (hasChain && chainArgs.length > 0) {
-    import("./utils/chain.js")
-        .then(async ({ executeChain }) => {
-            let steps: import("./utils/chain.js").ChainStep[] = [];
-            let currentType: import("./utils/chain.js").ChainStep["type"] | null = null;
-            let currentArgs: string[] = [];
+    (async () => {
+        let steps: ChainStep[] = [];
+        let currentType: ChainStep["type"] | null = null;
+        let currentArgs: string[] = [];
 
-            for (const arg of chainArgs) {
-                if (chainableCommands.includes(arg)) {
-                    if (currentType) {
-                        steps.push({ type: currentType, args: currentArgs });
-                    }
-                    currentType = arg as import("./utils/chain.js").ChainStep["type"];
-                    currentArgs = [];
-                } else {
-                    currentArgs.push(arg);
+        for (const arg of chainArgs) {
+            if (chainableCommands.includes(arg)) {
+                if (currentType) {
+                    steps.push({ type: currentType, args: currentArgs });
                 }
+                currentType = arg as ChainStep["type"];
+                currentArgs = [];
+            } else {
+                currentArgs.push(arg);
             }
+        }
 
-            if (currentType) {
-                steps.push({ type: currentType, args: currentArgs });
+        if (currentType) {
+            steps.push({ type: currentType, args: currentArgs });
+        }
+
+        let subtaskChainCount = 0;
+        for (const step of steps) {
+            if (step.type === "subtask") {
+                subtaskChainCount++;
+            } else {
+                break;
             }
+        }
 
-            let subtaskChainCount = 0;
-            for (const step of steps) {
-                if (step.type === "subtask") {
-                    subtaskChainCount++;
-                } else {
-                    break;
-                }
-            }
+        if (subtaskChainCount > 1) {
+            const lastSubtaskStep = steps[subtaskChainCount - 1];
+            steps = [lastSubtaskStep, ...steps.slice(subtaskChainCount)];
+        }
 
-            if (subtaskChainCount > 1) {
-                const lastSubtaskStep = steps[subtaskChainCount - 1];
-                steps = [lastSubtaskStep, ...steps.slice(subtaskChainCount)];
-            }
-
-            await executeChain(todoFile, steps, subtaskChainCount || 1);
-        })
-        .catch((error) => {
-            console.error(`Error: ${(error as Error).message}`);
-            process.exit(1);
-        });
+        await executeChain(todoFile, steps, subtaskChainCount || 1);
+    })().catch((error) => {
+        console.error(`Error: ${(error as Error).message}`);
+        process.exit(1);
+    });
 } else {
     const program = new Command();
 
