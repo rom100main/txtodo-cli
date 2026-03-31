@@ -127,6 +127,12 @@ txtodo remove all
 txtodo subtask <index> "subtask text"
 \`\`\`
 
+Nested subtask :
+\`\`\`bash
+txtodo subtask subtask <index> "nested subtask text"
+\`\`\`
+Each additional \`subtask\` keyword adds one level of indentation (4 spaces).
+
 ## Status Commands
 
 ### Mark as complete

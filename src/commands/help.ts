@@ -27,6 +27,7 @@ Commands:
   list                      List all todos
   add <text>                Add a new todo
   subtask <index> <text>    Add a subtask to a todo
+  subtask subtask ...       Add nested subtask (chain for depth)
   remove <list index>       Remove todos by index
   insert <index> <text>     Insert a todo at position
   update <index> <text>     Update a todo's text
@@ -89,7 +90,11 @@ Add a subtask to an existing todo.
 
 \`\`\`bash
 txtodo subtask 1 "Call mom"
+txtodo subtask subtask 1 "Nested subtask"
+txtodo subtask subtask subtask 1 "Deep nested subtask"
 \`\`\`
+
+Each additional \`subtask\` keyword adds one level of indentation (4 spaces).
 
 ### remove
 Remove one or more todos by index.
