@@ -110,7 +110,7 @@ if (hasChain && chainArgs.length > 0) {
 } else {
     const program = new Command();
 
-    program.name("txtodo").description("A CLI for managing todo.txt files").version("1.1.1");
+    program.name("txtodo").description("A CLI for managing todo.txt files").version("1.0.0");
 
     program.addCommand(createHelpCommand());
     program.addCommand(createListCommand(todoFile));
