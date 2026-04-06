@@ -1,11 +1,13 @@
 {
     "name": "txtodo-cli",
     "version": "1.0.0",
-    "description": "A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks.",
+    "description": "A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes an MCP skill for AI agents.",
     "keywords": [
         "cli",
         "todo.txt",
-        "task-management"
+        "task-management",
+        "skills",
+        "agent-skills"
     ],
     "homepage": "https://github.com/rom100main/txtodo-cli#readme",
     "bugs": {

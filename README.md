@@ -1,6 +1,6 @@
 # Todo.txt MCP Server
 
-A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks.
+A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes an MCP skill for AI agents.
 
 ## Features
 
@@ -19,7 +19,7 @@ npm install -g txtodo-cli
 
 ## Usage
 
-The CLI works with `todo.txt` in your current directory by default. 
+The CLI works with `todo.txt` in your current directory by default.
 
 ```bash
 txtodo list
