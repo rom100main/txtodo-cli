@@ -2,6 +2,8 @@
 
 import { Command } from "commander";
 
+import { version } from "../package.json";
+
 import { createAddCommand } from "./commands/add.js";
 import { createFilterCommand } from "./commands/filter.js";
 import { createHelpCommand } from "./commands/help.js";
@@ -110,7 +112,7 @@ if (hasChain && chainArgs.length > 0) {
 } else {
     const program = new Command();
 
-    program.name("txtodo").description("A CLI for managing todo.txt files").version("1.0.0");
+    program.name("txtodo").description("A CLI for managing todo.txt files").version(version);
 
     program.addCommand(createHelpCommand());
     program.addCommand(createListCommand(todoFile));
