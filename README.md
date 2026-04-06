@@ -1,6 +1,6 @@
-# Todo.txt MCP Server
+# TxTodo CLI
 
-A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes an MCP skill for AI agents.
+A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes a skill for AI agents.
 
 ## Features
 
