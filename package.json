@@ -1,7 +1,7 @@
 {
     "name": "txtodo-cli",
-    "version": "1.1.1",
-    "description": "A CLI for txtodo a todo.txt parser/serializer with utils funcion, extension support and subtask handling",
+    "version": "1.0.0",
+    "description": "A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks.",
     "keywords": [
         "cli",
         "todo.txt",
