@@ -1,7 +1,8 @@
 {
     "name": "txtodo-cli",
     "version": "1.0.0",
-    "description": "A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes an MCP skill for AI agents.",
+    "description": "A powerful CLI for managing todo.txt files with full support for priorities, projects, contexts, custom extensions, and hierarchical subtasks. Includes a skill for AI agents.",
+    "author": "rom100main",
     "keywords": [
         "cli",
         "todo.txt",
@@ -18,10 +19,21 @@
         "url": "git+https://github.com/rom100main/txtodo-cli.git"
     },
     "license": "MIT",
-    "author": "rom100main",
+    "bin": {
+        "txtodo": "./dist/index.js"
+    },
+    "preferGlobal": true,
+    "dependencies": {
+        "@clack/prompts": "^1.1.0",
+        "commander": "^14.0.3",
+        "txtodo": "^1.0.0"
+    },
     "type": "commonjs",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "files": [
+        "dist/**/*"
+    ],
     "scripts": {
         "build": "tsc",
         "dev": "tsc --watch",
@@ -42,16 +54,5 @@
         "prettier": "^3.6.2",
         "ts-jest": "^29.1.0",
         "typescript": "^5.0.0"
-    },
-    "files": [
-        "dist/**/*"
-    ],
-    "bin": {
-        "todotxt-mcp": "./dist/index.js"
-    },
-    "dependencies": {
-        "@clack/prompts": "^1.1.0",
-        "commander": "^14.0.3",
-        "txtodo": "^1.0.0"
     }
 }
