@@ -29,18 +29,20 @@ Usage:
 Commands:
   list                      List all todos
   add <text>                Add a new todo
-  subtask <index> <text>    Add a subtask to a todo
-  subtask subtask ...       Add nested subtask (chain for depth)
   remove <list index>       Remove todos by index
   insert <index> <text>     Insert a todo at position
   update <index> <text>     Update a todo's text
   mark <list index>         Mark todos as complete
   unmark <list index>       Mark todos as incomplete
+  subtask <index> <text>    Add a subtask to a todo
+  subtask subtask ...       Add nested subtask (chain for depth)
   search <text>             Search todos by text
   filter <key>:<value>      Filter todos by key:value
   sort <key>:<ASC|DESC>     Sort todos by key
   skill                     Create minimal AI agent skill
   skill max                 Create comprehensive AI agent skill
+  help                      Show this help message
+  help markdown             Show help in markdown format
 
 List Index Format:
   Single: 1
